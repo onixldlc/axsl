@@ -1,0 +1,30 @@
+{
+  "name": "axsl",
+  "version": "0.1.0",
+  "description": "A configurable pipeline engine for executing API sequences using a domain-specific language",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "node example/example.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onixldlc/axsl.git"
+  },
+  "keywords": [
+    "dsl",
+    "api",
+    "pipeline",
+    "automation",
+    "http",
+    "javascript"
+  ],
+  "author": "onixldlc",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.9.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

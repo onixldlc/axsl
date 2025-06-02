@@ -1,0 +1,6 @@
+axsl\.npmignore
+node_modules/
+.git/
+.github/
+*.log
+*.tgz

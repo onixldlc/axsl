@@ -1,0 +1,53 @@
+{
+    "pipeline": [
+      {
+        "name": "step1",
+        "method": "post",
+        "url": "https://example.com/",
+        "body": { "apiKey": "testapi" },
+        "continueOnError": true
+      },
+      {
+        "name": "step2",
+        "method": "get",
+        "url": "https://example.com",
+        "body": null
+      },
+      {
+        "name": "step3",
+        "method": "post",
+        "url": "https://example.com/",
+        "body": {
+          "Headers": {
+            "X-Forwarded-For": "{{step2.data}}"
+          },
+          "name": "testing name",
+          "username": "abvacacacaca",
+          "someArr": ["item1", "item2", "item3"]
+        },
+        "continueOnError": true
+      },
+      {
+        "name": "step4JS",
+        "type": "js",
+        "code": "return { message: 'This is a test message from JavaScript code.', data:sessionStore.step2.data }"
+      },
+      {
+        "name": "step5JS",
+        "type": "js",
+        "code": [
+          "console.log('This is a test message from JavaScript code.');",
+          "return { message: 'This is another test message from JavaScript code.', data:sessionStore.step2.data }"
+        ]
+      },
+      {
+        "name": "step6",
+        "method": "post",
+        "url": "https://example.com/",
+        "body": {
+          "cool": "{{jsTest.message}}"
+        },
+        "continueOnError": true
+      }
+    ]
+  }
