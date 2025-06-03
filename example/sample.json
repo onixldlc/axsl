@@ -48,6 +48,21 @@
           "cool": "{{jsTest.message}}"
         },
         "continueOnError": true
+      },
+      {
+        "name": "step7",
+        "method": "get",
+        "url": "https://self-signed.badssl.com/",
+        "body": null,
+        "continueOnError": true
+      },
+      {
+        "name": "step8",
+        "method": "get",
+        "url": "https://self-signed.badssl.com/",
+        "body": null,
+        "continueOnError": true,
+        "allowSelfSignedSSL": true
       }
     ]
   }

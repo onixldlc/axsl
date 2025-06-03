@@ -101,7 +101,8 @@ class DSLParser {
 		code: stepType === 'js' ? step.code : undefined,
 		body: step.body || null,
 		onSuccess: step.onSuccess || null,
-		continueOnError: step.continueOnError || false
+		continueOnError: step.continueOnError || false,
+		allowSelfSignedSSL: step.allowSelfSignedSSL || false
 	  };
 	}
 }

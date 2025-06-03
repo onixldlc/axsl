@@ -1,4 +1,5 @@
 const axios = require('axios');
+const https = require('https');  // Add the https module import
 
 class HttpExecutor {
   constructor(templating) {
@@ -20,7 +21,7 @@ class HttpExecutor {
    * @param {object} sessionStore - Session store object
    */
   async execute(step, sessionStore) {
-    const { name, method, url, body, onSuccess } = step;
+    const { name, method, url, body, onSuccess, allowSelfSignedSSL } = step;
 
     const replacedUrl = this.templating.replacePlaceholdersInString(url);
     const replacedBody = this.templating.replacePlaceholders(body);
@@ -36,11 +37,20 @@ class HttpExecutor {
 
     console.log(`Executing HTTP step: ${name} -> [${method}] ${replacedUrl}`);
 
-    const response = await axios({
+    const requestConfig = {
       method,
       url: replacedUrl,
       data: replacedBody
-    });
+    };
+
+    if (allowSelfSignedSSL === true) {
+      console.log(`Step "${name}" is allowing self-signed SSL certificates`);
+      requestConfig.httpsAgent = new https.Agent({
+        rejectUnauthorized: false
+      });
+    }
+
+    const response = await axios(requestConfig);
 
     sessionStore[name] = response;
 
