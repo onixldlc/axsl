@@ -1,11 +1,11 @@
 {
   "name": "axsl",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A configurable pipeline engine for executing API sequences using a domain-specific language",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "node example/example.js"
+    "start": "node example/example.js"
   },
   "repository": {
     "type": "git",
