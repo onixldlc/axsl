@@ -1,5 +1,5 @@
 const axios = require('axios');
-const https = require('https');  // Add the https module import
+const https = require('https');
 
 class HttpExecutor {
   constructor(templating) {
@@ -21,13 +21,31 @@ class HttpExecutor {
    * @param {object} sessionStore - Session store object
    */
   async execute(step, sessionStore) {
-    const { name, method, url, body, onSuccess, allowSelfSignedSSL } = step;
+    const { name, method, url, body, headers, onSuccess, allowSelfSignedSSL, contentType } = step;
 
     const replacedUrl = this.templating.replacePlaceholdersInString(url);
-    const replacedBody = this.templating.replacePlaceholders(body);
+    
+    let replacedBody = body;
+    if (replacedBody !== null) {
+      if (typeof replacedBody === 'string') {
+        replacedBody = this.templating.replacePlaceholdersInString(body);
+      } else {
+        replacedBody = this.templating.replacePlaceholders(body);
+      }
+    }
+
+    let processedHeaders = {};
+    if (headers && typeof headers === 'object') {
+      for (const [key, value] of Object.entries(headers)) {
+        processedHeaders[key] = this.templating.replacePlaceholdersInString(value);
+      }
+    }
 
     const unresolvableUrl = this.templating.validatePlaceholders(url);
-    const unresolvableBody = this.templating.validateAllPlaceholders(body);
+    const unresolvableBody = typeof body === 'string'
+      ? this.templating.validatePlaceholders(body)
+      : this.templating.validateAllPlaceholders(body);
+      
     if (unresolvableUrl.length > 0 || unresolvableBody.length > 0) {
       console.warn(
         `Step "${name}" has unresolvable placeholders:`,
@@ -40,8 +58,26 @@ class HttpExecutor {
     const requestConfig = {
       method,
       url: replacedUrl,
-      data: replacedBody
+      headers: processedHeaders
     };
+
+    if (contentType) {
+      requestConfig.headers['Content-Type'] = contentType;
+      
+      if (contentType.includes('xml') || contentType.includes('text/') || contentType.includes('plain')) {
+        if (typeof replacedBody === 'object' && replacedBody !== null) {
+          console.warn(`Step "${name}" has object body with text/xml content type. Consider using a string body instead.`);
+        }
+        requestConfig.data = typeof replacedBody === 'string' ? replacedBody : JSON.stringify(replacedBody);
+      } else {
+        requestConfig.data = replacedBody;
+      }
+    } else if (replacedBody !== null) {
+      if (typeof replacedBody === 'object') {
+        requestConfig.headers['Content-Type'] = 'application/json';
+      }
+      requestConfig.data = replacedBody;
+    }
 
     if (allowSelfSignedSSL === true) {
       console.log(`Step "${name}" is allowing self-signed SSL certificates`);

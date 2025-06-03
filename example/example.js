@@ -17,5 +17,7 @@ const defaultPath = "./sample.json";
 
   const runner = new DSLRunner();
   await runner.execute(sampleDsl);
-  console.log('Session store after run:', runner.sessionStore);
+  for (const step of sampleDsl.pipeline) {
+    console.log(`Step "${step.name}" executed with result:`, runner.sessionStore[step.name]);
+  }
 })();

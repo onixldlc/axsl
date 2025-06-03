@@ -100,6 +100,8 @@ class DSLParser {
 		url: stepType === 'http' ? step.url : undefined,
 		code: stepType === 'js' ? step.code : undefined,
 		body: step.body || null,
+		headers: step.headers || {},
+		contentType: step.contentType || null,
 		onSuccess: step.onSuccess || null,
 		continueOnError: step.continueOnError || false,
 		allowSelfSignedSSL: step.allowSelfSignedSSL || false
