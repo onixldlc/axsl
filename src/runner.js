@@ -18,6 +18,8 @@ class DSLRunner {
 			new JsExecutor(this.templating)
 		]
 		this.executionErrors = [];
+		this.onStepStart = (step, pipeline, sessionStore) => {}
+		this.onStepEnd = (step, pipeline, sessionStore) => {};
 	}
 
 	/**
@@ -29,6 +31,12 @@ class DSLRunner {
 		this.executionErrors = [];
 
 		for (const step of parsedDSL.pipeline) {
+			try {
+				this.onStepStart(step, parsedDSL.pipeline, this.sessionStore);
+			} catch (error) {
+				console.error(`Error in onStepStart for step "${step.name}":`, error.message);
+			}
+
 			try {
 				await this.executeStep(step);
 			} catch (error) {
@@ -54,6 +62,12 @@ class DSLRunner {
 						timestamp: stepError.timestamp
 					};
 				}
+			}
+
+			try {
+				this.onStepEnd(step, parsedDSL.pipeline, this.sessionStore);
+			} catch (error) {
+				console.error(`Error in onStepStart for step "${step.name}":`, error.message);
 			}
 		}
 
